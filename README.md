@@ -9,29 +9,28 @@ Mike West. It has only been tested on gvim + Xubuntu
 Installation
 ------------
 
-1. Install [pathogen.vim](https://github.com/tpope/vim-pathogen) if you haven't
-already done so, then simply execute:
+Install [pathogen.vim](https://github.com/tpope/vim-pathogen) if you haven't already done so, then simply execute:
 
 ```shell
-      cd ~/.vim/bundle
-      git clone git://github.com/mmai/vim-zenmode.git
+  cd ~/.vim/bundle
+  git clone git://github.com/mmai/vim-zenmode.git
 ```
-2. Install a good looking monospaced font :
+Install a good looking monospaced font :
+
+```shell
+  cd ~/.font
+  curl http://www.fontsquirrel.com/fonts/download/cousine > cousine.zip
+  unzip cousine.zip
+  fc-cache -vf ~/.font
+```
+
+Configure zenmode font and colorscheme in your .vimrc :
 
 ```vim
-      cd ~/.font
-      curl http://www.fontsquirrel.com/fonts/download/cousine > cousine.zip
-      unzip cousine.zip
-      fc-cache -vf ~/.font
-```
-
-3. Configure zenmode font and colorscheme in your .vimrc :
-
-```vim
-      "Zenmode
-      let g:zenmode_background = "dark"
-      let g:zenmode_colorscheme = "solarized"
-      let g:zenmode_font ="Cousine 12"
+  "Zenmode
+  let g:zenmode_background = "dark"
+  let g:zenmode_colorscheme = "solarized"
+  let g:zenmode_font ="Cousine 12"
 ```
 
 Usage

@@ -3,10 +3,13 @@
 "Description: Vaguely emulates a writeroom-like environment in Vim by
 "             splitting the current window in such a way as to center a column
 "             of user-specified width, wrap the text, and break lines.
+"             This is a stripped down version of vimroom by Mike West
+"             (http://projects.mikewest.org/vimroom/), with some
+"             enhancements.
 "Maintainer:  Henri Bourcereau <henri@rhumbs.fr>
-"Version:     0.1
-"Last Change: 2013-01-26
-"License:     BSD <../LICENSE.markdown>
+"Version:     0.2
+"Last Change: 2013-02-02
+"License:     BSD 
 "==============================================================================
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -20,9 +23,19 @@ if exists( "g:loaded_zenmode_plugin" )
 endif
 let g:loaded_zenmode_plugin = 1
 
-" The desired font. Defaults to Cousine 12
+" The desired font. Defaults to the current font (suggested : Cousine 12)
 if !exists( "g:zenmode_font" )
-  let g:zenmode_font ="Cousine 12"
+  let g:zenmode_font = &guifont
+endif
+
+" The desired background. Defaults to dark
+if !exists( "g:zenmode_background" )
+  let g:zenmode_background ="dark"
+endif
+
+" The desired colorscheme. Defaults to desert (suggested : solarized)
+if !exists( "g:zenmode_colorscheme" )
+  let g:zenmode_colorscheme ="desert"
 endif
 
 " The desired column width.  Defaults to 80:
@@ -40,16 +53,6 @@ if !exists( "g:zenmode_sidebar_height" )
     let g:zenmode_sidebar_height = 3
 endif
 
-" The GUI background color.  Defaults to "black"
-if !exists( "g:zenmode_guibackground" )
-    let g:zenmode_guibackground = "black"
-endif
-
-" The cterm background color.  Defaults to "bg"
-if !exists( "g:zenmode_ctermbackground" )
-    let g:zenmode_ctermbackground = "bg"
-endif
-
 " The "scrolloff" value: how many lines should be kept visible above and below
 " the cursor at all times?  Defaults to 999 (which centers your cursor in the 
 " active window).
@@ -63,14 +66,6 @@ endif
 " run the mappings.
 if !exists( "g:zenmode_navigation_keys" )
     let g:zenmode_navigation_keys = 1
-endif
-
-" Should Zenmode clear line numbers from the Zenmodeed buffer?  Defaults to `1`
-" (on). Set to `0` if you'd prefer Zenmode to leave line numbers untouched.
-" (Note that setting this to `0` will not turn line numbers on if they aren't
-" on already).
-if !exists( "g:zenmode_clear_line_numbers" )
-    let g:zenmode_clear_line_numbers = 1
 endif
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -93,10 +88,15 @@ function! s:sidebar_size()
 endfunction
 
 function! <SID>ZenmodeToggle()
+  "Set the new font BEFORE testing window width
   exec "set gfn=".escape(g:zenmode_font,' ')
+
+  exec "set background=".escape(g:zenmode_background,' ')
+  exec "colorscheme ".escape(g:zenmode_colorscheme,' ')
+
   if s:is_the_screen_wide_enough()
     let s:active = 1
-    let s:sidebar = s:sidebar_size()
+
     " Turn off Powerline
     autocmd! Powerline
 
@@ -106,6 +106,7 @@ function! <SID>ZenmodeToggle()
     " Turn off status bar
     set statusline=
 
+    let s:sidebar = s:sidebar_size()
     if g:zenmode_min_sidebar_width
       " Create the left sidebar
       exec( "silent leftabove " . s:sidebar . "vsplit new" )
@@ -141,10 +142,10 @@ function! <SID>ZenmodeToggle()
     " Setup wrapping, line breaking, and push the cursor down
     set wrap
     set linebreak
-    if g:zenmode_clear_line_numbers
-      set nonumber
-      silent! set norelativenumber
-    endif
+
+    set nonumber
+    silent! set norelativenumber
+
     exec( "set textwidth=".g:zenmode_width )
     exec( "set scrolloff=".g:zenmode_scrolloff )
 
@@ -165,13 +166,10 @@ function! <SID>ZenmodeToggle()
 
     " Hide distracting visual elements
     if has('gui_running')
-      let l:highlightbgcolor = "guibg=" . g:zenmode_guibackground
-      let l:highlightfgbgcolor = "guifg=" . g:zenmode_guibackground . " " . l:highlightbgcolor
+      let l:highlightfgbgcolor = "guifg=bg guibg=bg"
     else
-      let l:highlightbgcolor = "ctermbg=" . g:zenmode_ctermbackground
-      let l:highlightfgbgcolor = "ctermfg=" . g:zenmode_ctermbackground . " " . l:highlightbgcolor
+      let l:highlightfgbgcolor = "ctermfg=bg ctermbg=bg"
     endif
-    exec( "hi Normal " . l:highlightbgcolor )
     exec( "hi VertSplit " . l:highlightfgbgcolor )
     exec( "hi NonText " . l:highlightfgbgcolor )
     exec( "hi StatusLine " . l:highlightfgbgcolor )
@@ -191,5 +189,5 @@ command -nargs=0 ZenmodeToggle call <SID>ZenmodeToggle()
 
 " If no mapping exists, map it to `<Leader>V`.
 if !hasmapto( '<Plug>ZenmodeToggle' )
-    nmap <silent> <Leader>V <Plug>ZenmodeToggle
+    nmap <silent> <Leader>Z <Plug>ZenmodeToggle
 endif

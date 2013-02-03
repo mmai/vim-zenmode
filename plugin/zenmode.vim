@@ -88,6 +88,16 @@ function! s:sidebar_size()
 endfunction
 
 function! <SID>ZenmodeToggle()
+  " Maximize gvim window.
+  if has("gui_running")
+    set lines=55 columns=155
+  endif
+
+  " Set spell checking
+  if exists( "g:zenmode_spell" )
+    exec "set spelllang=".g:zenmode_spell." spell"
+  endif
+
   "Set the new font BEFORE testing window width
   exec "set gfn=".escape(g:zenmode_font,' ')
 

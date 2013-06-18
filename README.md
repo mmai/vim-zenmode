@@ -37,8 +37,8 @@ Usage
 -----
 
 * Open gvim. Expand your window if necessary
-* Switch to Zen Mode with _<LEADER> + Z_
-* Go Full Screen (ALT + F11 on Xubuntu)
+* Switch to Zen Mode with ```<LEADER> + Z```
+* Go Full Screen (```ALT + F11``` on Xubuntu)
 * Write great things
 * Quit with :qa (there are many windows to close)
 

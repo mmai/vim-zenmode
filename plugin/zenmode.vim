@@ -116,6 +116,11 @@ function! <SID>ZenmodeToggle()
         :AirlineToggle
     endif
 
+    " Disable line numbering, if numbers.vim is enabled
+    if exists(':NumbersDisable')
+        :NumbersDisable
+    endif
+
 
     " Turn off menus
     set guioptions=

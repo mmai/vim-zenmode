@@ -121,6 +121,7 @@ function! <SID>ZenmodeToggle()
     set guioptions=
 
     " Turn off status bar
+    set laststatus=0
     set statusline=
 
     let s:sidebar = s:sidebar_size()

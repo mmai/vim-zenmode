@@ -99,16 +99,34 @@ function! <SID>ZenmodeToggle()
   endif
 
   "Set the new font BEFORE testing window width
-  exec "set gfn=".escape(g:zenmode_font,' ')
+  if !empty('g:zenmode_font')
+    exec "set gfn=".escape(g:zenmode_font,' ')
+  endif
 
-  exec "set background=".escape(g:zenmode_background,' ')
-  exec "colorscheme ".escape(g:zenmode_colorscheme,' ')
+  " if !empty('g:zenmode_background')
+  "   exec "set background=".escape(g:zenmode_background,' ')
+  " endif
+  if !empty('g:zenmode_colorscheme')
+    exec "colorscheme ".escape(g:zenmode_colorscheme,' ')
+  endif
 
   if s:is_the_screen_wide_enough()
     let s:active = 1
 
     " Turn off Powerline
-    autocmd! Powerline
+    if exists('Powerline')
+        autocmd! Powerline
+    endif
+    " Turn off Airline
+    if exists(':AirlineToggle')
+        :AirlineToggle
+    endif
+
+    " Disable line numbering, if numbers.vim is enabled
+    if exists(':NumbersDisable')
+        :NumbersDisable
+    endif
+
 
     " Turn off menus
     set guioptions=
@@ -178,12 +196,16 @@ function! <SID>ZenmodeToggle()
     if has('gui_running')
       let l:highlightfgbgcolor = "guifg=bg guibg=bg"
     else
-      let l:highlightfgbgcolor = "ctermfg=bg ctermbg=bg"
+      
+      let l:highlightfgbgcolor = "ctermfg=black ctermbg=black cterm=reverse"
     endif
-    exec( "hi VertSplit " . l:highlightfgbgcolor )
-    exec( "hi NonText " . l:highlightfgbgcolor )
-    exec( "hi StatusLine " . l:highlightfgbgcolor )
-    exec( "hi StatusLineNC " . l:highlightfgbgcolor )
+    if !empty('l:highlightfgbgcolor')
+        exec( "hi VertSplit " . l:highlightfgbgcolor )
+        exec( "hi NonText " . l:highlightfgbgcolor )
+        exec( "hi StatusLine " . l:highlightfgbgcolor )
+        exec( "hi StatusLineNC " . l:highlightfgbgcolor )
+        exec( "hi Normal ctermbg=black" )
+    endif
     set t_mr=""
     set fillchars+=vert:\ 
   else

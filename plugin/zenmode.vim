@@ -108,7 +108,14 @@ function! <SID>ZenmodeToggle()
     let s:active = 1
 
     " Turn off Powerline
-    autocmd! Powerline
+    if exists('Powerline')
+        autocmd! Powerline
+    endif
+    " Turn off Airline
+    if exists(':AirlineToggle')
+        :AirlineToggle
+    endif
+
 
     " Turn off menus
     set guioptions=
